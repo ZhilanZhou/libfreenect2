@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
 
   libfreenect2::SyncMultiFrameListener listener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth);
   libfreenect2::FrameMap frames;
-  libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4);
+  libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4), bigdepth(1920, 1082, 4);
 
   dev->setColorFrameListener(&listener);
   dev->setIrAndDepthFrameListener(&listener);
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
     libfreenect2::Frame *ir = frames[libfreenect2::Frame::Ir];
     libfreenect2::Frame *depth = frames[libfreenect2::Frame::Depth];
 
-    registration->apply(rgb, depth, &undistorted, &registered);
+    registration->apply(rgb, depth, &undistorted, &registered, true, &bigdepth);
 
     framecount++;
     if (!viewer_enabled)
@@ -222,7 +222,8 @@ int main(int argc, char *argv[])
     viewer.addFrame("RGB", rgb);
     viewer.addFrame("ir", ir);
     viewer.addFrame("depth", depth);
-    viewer.addFrame("registered", &registered);
+    viewer.addFrame("bigdepth", &bigdepth);
+    //viewer.addFrame("registered", &registered);
 
     protonect_shutdown = protonect_shutdown || viewer.render();
 #endif
